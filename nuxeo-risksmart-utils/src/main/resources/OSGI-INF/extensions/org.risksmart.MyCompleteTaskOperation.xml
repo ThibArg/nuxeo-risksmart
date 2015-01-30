@@ -1,0 +1,8 @@
+<component name="org.risksmart.MyCompleteTaskOperation">
+
+  <extension target="org.nuxeo.ecm.core.operation.OperationServiceComponent"
+    point="operations" >
+      <operation class="org.risksmart.MyCompleteTaskOperation" />
+   </extension>
+    
+</component>
