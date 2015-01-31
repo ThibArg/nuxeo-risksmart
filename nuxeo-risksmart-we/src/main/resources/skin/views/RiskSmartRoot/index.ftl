@@ -1,30 +1,21 @@
 <@extends src="base.ftl">
-<@block name="header">You signed in as ${Context.principal}</@block>
+<@block name="header_scripts"><script src="${skinPath}/scripts/RiskSmart_main.js"></script></@block>
 
 <@block name="content">
-
-<div style="margin: 10px 10px 10px 10px">
-<p>
-This is the view corresponding to your root object: ${This.class.simpleName}.
-</p>
-
-<p>
-You can find the code of this view in: src/main/resources/skin/views/${This.class.simpleName}
-</p>
-
-<p>
-To render a view from an WebEngine object you should create @GET annotated method which is returning the view: getView("viewname") where <i>viewname</i> is the file name (without the ftl extension) in the views/ObjectName folder.   
-</p>
-
-<p>
-In a view you can access the object instance owning the view using ${r"${This}"} variable or the request context using the ${r"${Context}"} variable.  
-</p>
-
-<p>
-Also, you can use @block statements to create reusable layouts.
-</p>
-
+<form id="mainForm" onsubmit="return SubmitNodeForm(this);">
+<div id="placeHolder" class="screenTextAndFields">
+	<#include "nodes.ftl">
 </div>
+<!--
+<div id="nextButtonDiv" class="screenButtons">
+	<button id="nextStepButton" type="submit" name="goNext" class="screenButton">Next</button>
+</div>
+-->
+</form>
+
+<script type="text/javascript" charset="utf-8">
+	doInit('${Document.id}', '${Context.getProperty("currentUser")}', <#if Context.getProperty("workflowIsRunning")>true<#else>false</#if>, "Node");
+</script>
 
 </@block>
 </@extends>

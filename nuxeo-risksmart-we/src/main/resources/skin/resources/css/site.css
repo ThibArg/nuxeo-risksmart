@@ -1,3 +1,77 @@
+.noDisplay {
+	display: none;
+}
+
+.header {
+	padding: 5px;
+	padding-left: 15px;
+	font-size: 24px;
+	vertical-align:middle;
+	border-bottom-style: solid;
+	border-bottom-color: white;
+	text-align: left;
+}
+
+.headerRight {
+	display: inline-block;
+	float: right;
+	margin-right: 30px;
+}
+
+.statusSubHeader {
+	text-align: center;
+	padding: 0 15;
+	color: white;
+	font-size: 36px;
+	line-height: normal;
+}
+
+.statusDetails {
+	text-align: center;
+	padding: 0 15;
+	color: white;
+	font-size: 28px;
+	line-height: normal;
+}
+
+.statusDetailValue {
+	color: yellow
+}
+
+#mainDiv {
+	text-align: center;
+	padding: 50px;
+}
+
+.screenTextAndFields {
+	/*margin: 50px auto;*/
+	/*width: 75%;*/
+	text-align: center;
+	padding: 0 75;
+}
+
+.screenButtons {
+	text-align: center;
+}
+
+.buyInsurance {
+	width: 580px;
+}
+
+.screenButton {
+	padding: 10px 20px 10px 20px;
+	margin: 0px 20px 25px 20px;
+	color: white;
+	background-color: #8ec250;
+	font-size: 36px;
+}
+
+.startNewApplication {
+	margin: 100px;
+	padding: 50px;
+	color: yellow;
+	
+}
 
 body, html {
     margin: 0;
@@ -6,7 +80,80 @@ body, html {
 
 body {
     min-width: 1000px;
-    font: normal 12px Verdana, sans-serif;
+    /*
+    font: normal 24px Verdana, sans-serif;
+    */
+    background-color: #0080be;
+    color: white;
+    
+    font-family: /*'Open Sans',*/ 'Helvetica Neue', Arial, sans-serif;
+	font-size: 60px;
+	font-weight: 300;
+	height: auto;
+	letter-spacing: normal;
+	line-height:63px;
+	text-align: center;
+}
+
+.infoHeader {
+	font-family: 'Roboto Slab', Times;
+	font-size:smaller
+}
+
+.infoText {
+	color: #00b0eb;
+}
+
+.infoField {
+	/* Same as the body */
+	background-color: #0080be;
+	color: white;
+	font-family: /*'Open Sans',*/ 'Helvetica Neue', Arial, sans-serif;
+	font-size: 60px;
+	text-align: center;
+	
+	/* Specific */
+	width: 450px;
+	border-top: none;
+	border-right: none;
+	border-left: none;
+	border-bottom: 3px dotted white;
+}
+
+.infoFieldForNumber {
+	width: 150px;
+}
+
+.smaller {
+	font-size: smaller;
+}
+
+.status {
+	margin: 15px;
+}
+
+.startNewCyberRisk {
+	margin: 30px;
+}
+
+.infoTextAreaField {
+	/* Same as the body */
+	background-color: #0080be;
+	font-family: /*'Open Sans',*/ 'Helvetica Neue', Arial, sans-serif;
+	font-weight: normal;
+	color: white;
+	font-size: 50px;
+	text-align: center;
+	vertical-align: middle;
+	
+	/* Specific */
+	width: 700px;
+	border: 3px dotted white;
+}
+
+.restError {
+	color: yellow;
+	font-size: 75%;
 }
 
 table.main {
@@ -22,7 +169,7 @@ table.main td {
 }
 
 table.header {
-    background-color:black;
+    background-color:#0080be;
     border: 0px;
     width: 100%;
     border-spacing: 0px;
