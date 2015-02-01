@@ -43,8 +43,47 @@ import static org.nuxeo.ecm.platform.ui.web.auth.NXAuthConstants.REQUESTED_URL;
 /**
  * The root entry for the WebEngine module.
  * 
- * WARNING: This is POC, we are ready to handle a single Application (not a list
- * of applications) from customer => brocker +> insurer
+ * Everything is handled from here in this single "/risksmart" path.
+ * 
+ * Basically, the code detects what form (here we are in WebEngine, so it means
+ * what template) must be sent to the browser. This depends on:
+ * <p>
+ * -> Current user: customer, broker, insurer
+ * <p>
+ * -> State of the CyberRisk application and its workflow.
+ * <p>
+ * So, for example:
+ * <p>
+ * * customer + no application => create a new one
+ * <p>
+ * * Customer and one applicaiton => check status
+ * <p>
+ * * Broker and a workflow node for me => handle it
+ * <p>
+ * * Broker and a no workflow node for me => get status
+ * <p>
+ * * etc.
+ * <p>
+ * ==========================================================================
+ * VERY IMPORTANT ABOUT THIS POC
+ * ========================================================================== We
+ * handle a _SINGLE_ application for a _SINGLE_ customer: Just one, not a list
+ * of applications
+ * 
+ * 
+ * ==========================================================================
+ * VMOVE EVERYTHING TO JavaScript
+ * ==========================================================================
+ * People can easily read this code and reproduce the behavior with
+ * JavaScript/nuxeo.js. I recommend that, if this is what you want to do, you
+ * create an operation (java) that does this dispatch and returns a value the
+ * caller can use to display the correct form in the browser. Here,
+ * "the correct form" means that in the context of a Single Page Application,
+ * you would show/hide/create/remove/etc. the elements dynamically depending on
+ * the result of the call.
+ * 
+ * Check the corresponding Studio project for the Workflow, the documents, the
+ * lifecycle, the groups, ...
  * 
  */
 @Path("/risksmart")
@@ -89,23 +128,6 @@ public class RiskSmartRoot extends ModuleRoot {
         // In our model, an application is always bound to a workflow when
         // getRunningApplicationDocument() returned a document
         ctx.setProperty("workflowIsRunning", true);
-        /*
-        if (theDoc != null) {
-
-            Framework.loginAs("Administrator");
-            CoreSession session = ctx.getCoreSession();
-            String nxql = "SELECT * FROM TaskDoc WHERE ecm:currentLifeCycleState = 'opened'"
-                    + " AND nt:targetDocumentId = '" + theDoc.getId() + "'";
-            DocumentModelList docs = session.query(nxql);
-            if (docs.size() == 0) {
-                // We have a problem...
-                theDoc = null;
-            } else {
-                ctx.setProperty("workflowIsRunning", true);
-            }
-            Framework.loginAs(userName);
-        }
-        */
 
         // So.
         // -> If we have no running task => start the
@@ -128,7 +150,7 @@ public class RiskSmartRoot extends ModuleRoot {
             }
 
             // In the Studio project, the workflow and the lifecycle state are
-            // tied => we know there is a node to be handled
+            // closely tied => we know there is a node to be handled
             String lcs = theDoc.getCurrentLifeCycleState();
             String status = "", statusDetails = "";
             String viewToreturn = "";
@@ -178,12 +200,13 @@ public class RiskSmartRoot extends ModuleRoot {
             ctx.setProperty("applicationStatusDetails", statusDetails);
             toBeReturned = getView(viewToreturn).arg("Document",
                     DocumentFactory.newDocument(ctx, theDoc));
-            
+
             String prevInsurance = (String) theDoc.getPropertyValue("cra:previous_insurance");
-            if(prevInsurance == null || prevInsurance.isEmpty()) {
+            if (prevInsurance == null || prevInsurance.isEmpty()) {
                 prevInsurance = "(none)";
             }
-            ctx.setProperty("prevInsurance", prevInsurance);;
+            ctx.setProperty("prevInsurance", prevInsurance);
+            ;
 
         }
         if (toBeReturned == null) {
@@ -233,29 +256,27 @@ public class RiskSmartRoot extends ModuleRoot {
 
         return firstLastName.isEmpty() ? inUserName : firstLastName;
     }
-    
+
     @GET
     @Path("logout")
-    public Object doLogout(@Context HttpServletResponse response) throws Exception {
+    public Object doLogout(@Context HttpServletResponse response)
+            throws Exception {
 
         Cookie cookie = new Cookie("JSESSIONID", null);
         cookie.setMaxAge(0);
         cookie.setPath("/");
 
         response.addCookie(cookie);
-        
+
         PluggableAuthenticationService service = (PluggableAuthenticationService) Framework.getRuntime().getComponent(
                 PluggableAuthenticationService.NAME);
         service.invalidateSession(request);
 
         /*
-        String redirect = request.getParameter(REQUESTED_URL);
-        if (redirect != null) {
-            log.debug("Logout done: Redirect to default URL: " + redirect);
-        } else {
-            redirect = getContext().getBasePath();
-        }
-        return redirect(redirect);
+         * String redirect = request.getParameter(REQUESTED_URL); if (redirect
+         * != null) { log.debug("Logout done: Redirect to default URL: " +
+         * redirect); } else { redirect = getContext().getBasePath(); } return
+         * redirect(redirect);
          */
         return redirect("/nuxeo/site/risksmart");
     }

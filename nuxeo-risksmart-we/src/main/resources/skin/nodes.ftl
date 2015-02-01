@@ -27,6 +27,8 @@ Max. coverage requested: <span class="statusDetailValue">$${Document["cra:covera
 IT departement: <span class="statusDetailValue">${Document["cra:it_dpt_nb_people"]}</span> people, <span class="statusDetailValue">${Document["cra:it_dpt_nb_of_security_specialists"]}</span> specialist(s)<br/>
 Previous insurance for the same risk: <span class="statusDetailValue">${Context.getProperty("prevInsurance")}</span><br/>
 <p></p>
+<p>Insurer Comment: <span class="statusDetailValue"><#if Document["cra:insurer_comment"]?has_content>${Document["cra:insurer_comment"]}<#else>(none)</#if></span></p>
+<p>Comment:<input type="text" class="infoField smaller status" style="width:800px" name="broker_comment" value="${Document['cra:broker_comment']}" /></p>
 
 <div id="nextButtonDiv" class="screenButtons">
 	<button id="b_backToCustomer" type="submit" onclick="gSubmitButton=this.id" name="backToCustomer" class="screenButton">Need More Detais</button>
@@ -44,7 +46,8 @@ Max. coverage requested: <span class="statusDetailValue">$${Document["cra:covera
 IT departement: <span class="statusDetailValue">${Document["cra:it_dpt_nb_people"]}</span> people, <span class="statusDetailValue">${Document["cra:it_dpt_nb_of_security_specialists"]}</span> specialist(s)<br/>
 Previous insurance for the same risk: <span class="statusDetailValue">${Context.getProperty("prevInsurance")}</span><br/>
 <p></p>
-<p>Comments:<input type="text" class="infoField smaller status" style="width:800px" name="insurerComents" value="" placeHolder="last name" required /></p>
+<p>Broker Comment: <span class="statusDetailValue"><#if Document["cra:broker_comment"]?has_content>${Document["cra:broker_comment"]}<#else>(none)</#if></span></p>
+<p>Comment:<input type="text" class="infoField smaller status" style="width:800px" name="insurer_comment" value="${Document['cra:insurer_comment']}" /></p>
 
 <div id="nextButtonDiv" class="screenButtons">
 	<button id="b_backToBroker" type="submit" onclick="gSubmitButton=this.id" name="backToBroker" class="screenButton">Need More Detais</button>

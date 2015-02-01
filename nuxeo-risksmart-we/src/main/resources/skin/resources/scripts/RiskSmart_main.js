@@ -19,7 +19,7 @@ function doInit(docId, inUser, inWorkflowIsRunning, inKind) {
 	gMainKind = inKind;
 }
 
-jQuery(document).ready( function() {
+jQuery(document).ready(function() {
 
 	var nxClient, allDivs, oneDiv, i, max;
 
@@ -47,10 +47,8 @@ jQuery(document).ready( function() {
 		return;
 	}
 
-	// We must get the divs, the tasks, etc. only if a workflow
-	// is running
-	// Else, we already are in the "lastStep" where the user can
-	// only
+	// We must get the divs, the tasks, etc. only if a workflow is running
+	// Else, we already are in the "lastStep" where the user can only
 	// download the pdf
 	if (gWeHaveARunningWorkflow) {
 
@@ -64,55 +62,53 @@ jQuery(document).ready( function() {
 		// We just call our REST_getCurrentTaskId Automation
 		// Chain, passing it the
 		// doc id. The chain returns the current task id.
-		nxClient
-				.operation("REST_getCurrentTaskId")
+		nxClient.operation("REST_getCurrentTaskId")
 				.context({
 					"applicantDataDocId" : gMainDocId
 				})
-				.execute(
-						function(inErr, inData) {
-							if (inErr) {
-								displayRestError(
-										"Get the current task",
-										inErr);
+				.execute(function(inErr, inData) {
+					if (inErr) {
+						displayRestError(
+								"Get the current task",
+								inErr);
+					} else {
+						gCurrentTaskId = JSON
+								.parse(inData).taskId;
+						gAllDivs[gCurrentTaskId]
+								.removeClass("noDisplay");
+						// And delete all the other
+						// ones, so submiting the form
+						// => no complain
+						// about non focusable, non
+						// entered fields, etc.)
+						Object
+								.keys(gAllDivs)
+								.forEach(
+										function(oneKey) {
+											if (oneKey != gCurrentTaskId) {
+												gAllDivs[oneKey]
+														.remove();
+												delete gAllDivs[oneKey];
+											}
+										});
+						if (kDEBUG) {
+							var debugSpan = jQuery("#debugSpan");
+							if (debugSpan == null
+									|| debugSpan.length < 1) {
+								jQuery(
+										"#risksmartHeader")
+										.append(
+												"<span id='debugSpan' style='padding-left: 20px;vertical-align: super; color: yellow;'>Current task: "
+														+ gCurrentTaskId
+														+ "</span>");
 							} else {
-								gCurrentTaskId = JSON
-										.parse(inData).taskId;
-								gAllDivs[gCurrentTaskId]
-										.removeClass("noDisplay");
-								// And delete all the other
-								// ones, so submiting the form
-								// => no complain
-								// about non focusable, non
-								// entered fields, etc.)
-								Object
-										.keys(gAllDivs)
-										.forEach(
-												function(oneKey) {
-													if (oneKey != gCurrentTaskId) {
-														gAllDivs[oneKey]
-																.remove();
-														delete gAllDivs[oneKey];
-													}
-												});
-								if (kDEBUG) {
-									var debugSpan = jQuery("#debugSpan");
-									if (debugSpan == null
-											|| debugSpan.length < 1) {
-										jQuery(
-												"#risksmartHeader")
-												.append(
-														"<span id='debugSpan' style='padding-left: 20px;vertical-align: super; color: yellow;'>Current task: "
-																+ gCurrentTaskId
-																+ "</span>");
-									} else {
-										debugSpan
-												.text("Current task: "
-														+ gCurrentTaskId);
-									}
-								}
+								debugSpan
+										.text("Current task: "
+												+ gCurrentTaskId);
 							}
-						});
+						}
+					}
+				});
 	} else { // if(gWeHaveARunningWorkflow)
 		jQuery("#nextStepButton").remove();
 		jQuery("#lastStep").removeClass("noDisplay");
@@ -134,9 +130,9 @@ function completeTask(inWFVariables, submitButton) {
 	contextData.transition = "validate";
 	if (submitButton == "b_backToCustomer") {
 		contextData.transition = "reject";
-	} else if(submitButton == "b_backToBroker") {
+	} else if (submitButton == "b_backToBroker") {
 		contextData.transition = "needInfo";
-	} else if(submitButton == "b_reject") {
+	} else if (submitButton == "b_reject") {
 		contextData.transition = "reject";
 	}
 
@@ -190,11 +186,15 @@ function SubmitNodeForm() {
 
 	wfVarAssign = {};
 	inputs.each(function() {
-		var input = $(this), fieldName = input.attr("name").replace("ad:", "");
-		wfVarAssign[fieldName] = input.val();
+		var input = $(this);
+		var fieldName;
+		if (!input.is("button")) { // We just want the "real" inputs
+			fieldName = input.attr("name");
+			wfVarAssign[fieldName] = input.val();
+		}
 	});
 
-	// Handle specific cases (convert bool-striongs to real booleans)
+	// Handle specific cases (convert bool-strings to real booleans)
 	boolStrFields.forEach(function(inField) {
 		if (inField in wfVarAssign) {
 			val = wfVarAssign[inField];
@@ -203,6 +203,7 @@ function SubmitNodeForm() {
 		}
 	});
 
+	// gSubmitButton is filled in the html, for "onclick" of the buttons
 	var submitButton = gSubmitButton;
 	gSubmitButton = "";
 	completeTask(wfVarAssign, submitButton);
@@ -253,7 +254,7 @@ function SubmitNewCyberRisk() {
 	formVars = {};
 	inputs.each(function() {
 		var input = $(this), fieldName = input.attr("name");// .replace("ad:",
-															// "");
+		// "");
 		formVars[fieldName] = input.val();
 	});
 
@@ -263,19 +264,17 @@ function SubmitNewCyberRisk() {
 	nxClient = new nuxeo.Client({
 		timeout : 10000
 	});
-	nxClient
-			.operation("REST_createCyberRiskAppAndStartWF")
+	nxClient.operation("REST_createCyberRiskAppAndStartWF")
 			.context(formVars)
-			.execute(
-					function(inErr, inData) {
-						var result;
-						if (inErr) {
-							displayRestError(
-									"Submit the Cyber Risk Application", inErr);
-						} else {
-							window.location.reload(true);
-						}
-					});
+			.execute(function(inErr, inData) {
+				var result;
+				if (inErr) {
+					displayRestError(
+							"Submit the Cyber Risk Application", inErr);
+				} else {
+					window.location.reload(true);
+				}
+			});
 
 	return false;
 }
