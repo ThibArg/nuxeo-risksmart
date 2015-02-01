@@ -10,6 +10,8 @@
 	border-bottom-style: solid;
 	border-bottom-color: white;
 	text-align: left;
+	background-color: black;
+	color: white;
 }
 
 .headerRight {
@@ -21,7 +23,7 @@
 .statusSubHeader {
 	text-align: center;
 	padding: 0 15;
-	color: white;
+	color: black /*white*/;
 	font-size: 36px;
 	line-height: normal;
 }
@@ -29,13 +31,13 @@
 .statusDetails {
 	text-align: center;
 	padding: 0 15;
-	color: white;
+	color: black /*white*/;
 	font-size: 28px;
 	line-height: normal;
 }
 
 .statusDetailValue {
-	color: yellow
+	color: orange /*yellow*/;
 }
 
 #mainDiv {
@@ -69,7 +71,7 @@
 .startNewApplication {
 	margin: 100px;
 	padding: 50px;
-	color: yellow;
+	color: orange /*yellow*/;
 	
 }
 
@@ -83,8 +85,8 @@ body {
     /*
     font: normal 24px Verdana, sans-serif;
     */
-    background-color: #0080be;
-    color: white;
+    background-color: white /*#0080be*/;
+    color: black /*white*/;
     
     font-family: /*'Open Sans',*/ 'Helvetica Neue', Arial, sans-serif;
 	font-size: 52px;
@@ -101,13 +103,13 @@ body {
 }
 
 .infoText {
-	color: #00b0eb;
+	color: black /*#00b0eb*/;
 }
 
 .infoField {
 	/* Same as the body */
-	background-color: #0080be;
-	color: white;
+	background-color: white /*#0080be*/;
+	color: orange /*white*/;
 	font-family: /*'Open Sans',*/ 'Helvetica Neue', Arial, sans-serif;
 	font-size: 60px;
 	text-align: center;
@@ -117,7 +119,7 @@ body {
 	border-top: none;
 	border-right: none;
 	border-left: none;
-	border-bottom: 3px dotted white;
+	border-bottom: 3px dotted gray;
 }
 
 .infoFieldForNumber {
@@ -138,21 +140,21 @@ body {
 
 .infoTextAreaField {
 	/* Same as the body */
-	background-color: #0080be;
+	background-color: white /*#0080be*/;
 	font-family: /*'Open Sans',*/ 'Helvetica Neue', Arial, sans-serif;
 	font-weight: normal;
-	color: white;
+	color: black /*white*/;
 	font-size: 50px;
 	text-align: center;
 	vertical-align: middle;
 	
 	/* Specific */
 	width: 700px;
-	border: 3px dotted white;
+	border: 3px dotted black;
 }
 
 .restError {
-	color: yellow;
+	color: red /*yellow*/;
 	font-size: 75%;
 }
 
@@ -169,7 +171,7 @@ table.main td {
 }
 
 table.header {
-    background-color:#0080be;
+    background-color:black /*#0080be*/;
     border: 0px;
     width: 100%;
     border-spacing: 0px;
