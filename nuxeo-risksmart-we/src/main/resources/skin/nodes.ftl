@@ -24,7 +24,7 @@ to prefill values
 	<p><span class="statusSubHeader">${Context.getProperty("applicantFirstLastName")} submitted a Cyber Risk Application (${Document["dc:title"]}) with the following details:</span></p>
 	Up to <span class="statusDetailValue">${Document["cra:max_people_involved"]}</span> people involved<br/>
 Max. coverage requested: <span class="statusDetailValue">$${Document["cra:coverage_limit"]}</span><br/>
-IT departement: <span class="statusDetailValue">${Document["cra:it_dpt_nb_people"]}</span> people, <span class="statusDetailValue">${Document["cra:it_dpt_nb_of_security_specialists"]}</span> specialist(s)<br/>
+IT department: <span class="statusDetailValue">${Document["cra:it_dpt_nb_people"]}</span> people, <span class="statusDetailValue">${Document["cra:it_dpt_nb_of_security_specialists"]}</span> specialist(s)<br/>
 Previous insurance for the same risk: <span class="statusDetailValue">${Context.getProperty("prevInsurance")}</span><br/>
 <p></p>
 <p>Insurer Comment: <span class="statusDetailValue"><#if Document["cra:insurer_comment"]?has_content>${Document["cra:insurer_comment"]}<#else>(none)</#if></span></p>
@@ -43,7 +43,7 @@ Previous insurance for the same risk: <span class="statusDetailValue">${Context.
 	<p><span class="statusSubHeader">${Context.getProperty("applicantFirstLastName")} submitted a Cyber Risk Application (${Document["dc:title"]}) with the following details:</span></p>
 	Up to <span class="statusDetailValue">${Document["cra:max_people_involved"]}</span> people involved<br/>
 Max. coverage requested: <span class="statusDetailValue">$${Document["cra:coverage_limit"]}</span><br/>
-IT departement: <span class="statusDetailValue">${Document["cra:it_dpt_nb_people"]}</span> people, <span class="statusDetailValue">${Document["cra:it_dpt_nb_of_security_specialists"]}</span> specialist(s)<br/>
+IT department: <span class="statusDetailValue">${Document["cra:it_dpt_nb_people"]}</span> people, <span class="statusDetailValue">${Document["cra:it_dpt_nb_of_security_specialists"]}</span> specialist(s)<br/>
 Previous insurance for the same risk: <span class="statusDetailValue">${Context.getProperty("prevInsurance")}</span><br/>
 <p></p>
 <p>Broker Comment: <span class="statusDetailValue"><#if Document["cra:broker_comment"]?has_content>${Document["cra:broker_comment"]}<#else>(none)</#if></span></p>

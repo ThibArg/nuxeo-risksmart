@@ -16,7 +16,7 @@ Submited by ${Context.getProperty("applicantFirstLastName")}<br/>
 </#if>
 Up to <span class="statusDetailValue">${Document["cra:max_people_involved"]}</span> people involved<br/>
 Max. coverage requested: <span class="statusDetailValue">$${Document["cra:coverage_limit"]}</span><br/>
-IT departement: <span class="statusDetailValue">${Document["cra:it_dpt_nb_people"]}</span> people, <span class="statusDetailValue">${Document["cra:it_dpt_nb_of_security_specialists"]}</span> specialist(s)<br/>
+IT department: <span class="statusDetailValue">${Document["cra:it_dpt_nb_people"]}</span> people, <span class="statusDetailValue">${Document["cra:it_dpt_nb_of_security_specialists"]}</span> specialist(s)<br/>
 Previous insurance for the same risk: <span class="statusDetailValue">${Context.getProperty("prevInsurance")}</span><br/>
 </div>
 <script type="text/javascript" charset="utf-8">
