@@ -17,6 +17,10 @@
 
 package org.risksmart;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import javax.security.auth.login.LoginException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -56,7 +60,7 @@ import static org.nuxeo.ecm.platform.ui.web.auth.NXAuthConstants.REQUESTED_URL;
  * <p>
  * * customer + no application => create a new one
  * <p>
- * * Customer and one applicaiton => check status
+ * * Customer and one application => check status
  * <p>
  * * Broker and a workflow node for me => handle it
  * <p>
@@ -100,6 +104,12 @@ public class RiskSmartRoot extends ModuleRoot {
 
     public static final String STATE_INSURER = "insurer_review";
 
+    public static final String STATE_OFFER = "offer";
+
+    public static final String STATE_OFFER_REVIEW = "offer_review";
+
+    public static final String STATE_CUSTOMER_REVIEW_OFFER = "customer_review_offer";
+
     @GET
     public Object doGet() throws LoginException {
 
@@ -122,6 +132,11 @@ public class RiskSmartRoot extends ModuleRoot {
         ctx.setProperty("applicationStatusDetails", "");
         ctx.setProperty("applicantFirstLastName", "");
         ctx.setProperty("prevInsurance", "");
+        ctx.setProperty("offerStartDate", "");
+        ctx.setProperty("offerEndDate", "");
+        ctx.setProperty("companyEmail", "offer@the.insurance.com");
+        ctx.setProperty("supPersCovStr", "no");
+        ctx.setProperty("additionalDefCovStr", "no");
 
         // get the applicant_data doc
         DocumentModel theDoc = getRunningApplicationDocument(nxPcipal);
@@ -139,6 +154,20 @@ public class RiskSmartRoot extends ModuleRoot {
         if (theDoc == null) {
             toBeReturned = getView("startNewApplication");
         } else {
+
+            String lcs = theDoc.getCurrentLifeCycleState();
+
+            buildContextHelpers(theDoc);
+            
+            // ===============================================================
+            // ONLY FOR THIS "ONE SINGLE DOC" POC.
+            // TO BE REMOVED, FOR SURE, IN MORE SERIOUS DEVELOPMENT
+            // ===============================================================
+            if(lcs.equals(STATE_CUSTOMER_REVIEW_OFFER)) {
+                return getView("customerReviewOffer").arg("Document",
+                        DocumentFactory.newDocument(ctx, theDoc));
+            }
+
             // Get details about the applicant for display (possibly)
             if (!isCustomer) {
                 ctx.setProperty(
@@ -151,7 +180,6 @@ public class RiskSmartRoot extends ModuleRoot {
 
             // In the Studio project, the workflow and the lifecycle state are
             // closely tied => we know there is a node to be handled
-            String lcs = theDoc.getCurrentLifeCycleState();
             String status = "", statusDetails = "";
             String viewToreturn = "";
             if (isCustomer) {
@@ -167,18 +195,24 @@ public class RiskSmartRoot extends ModuleRoot {
             } else if (isBroker) {
                 if (lcs.equals(STATE_BROKER)) {
                     viewToreturn = "index";
-                } else {
+                } else if(lcs.equals(STATE_OFFER_REVIEW)) {
+                    viewToreturn = "index";
+                }else {
                     status = "The Cyber Risk Application (" + theDoc.getTitle()
                             + ") is under review (state: " + lcs + ")";
                     if (lcs.equals(STATE_PROJECT)) {
                         statusDetails = "The customer is filling the missing information";
                     } else if (lcs.equals(STATE_INSURER)) {
                         statusDetails = "The insurer is reviewing the application";
+                    } else if (lcs.equals(STATE_OFFER)) {
+                        statusDetails = "The insurer is preparing the offer";
                     }
                     viewToreturn = "checkStatus";
                 }
             } else if (isInsurer) {
                 if (lcs.equals(STATE_INSURER)) {
+                    viewToreturn = "index";
+                } else if(lcs.equals(STATE_OFFER)) {
                     viewToreturn = "index";
                 } else {
                     status = "The Cyber Risk Application (" + theDoc.getTitle()
@@ -187,12 +221,15 @@ public class RiskSmartRoot extends ModuleRoot {
                         statusDetails = "The customer is filling the missing information";
                     } else if (lcs.equals(STATE_BROKER)) {
                         statusDetails = "The broker is reviewing the application";
+                    } else if(lcs.equals(STATE_OFFER_REVIEW)) {
+                        statusDetails = "The broker is reviewing the offer";
                     }
                     viewToreturn = "checkStatus";
                 }
             } else {
                 status = "The current Cyber Risk Application is"
                         + theDoc.getTitle();
+                statusDetails = "(limit of this Proof of Concept)";
                 viewToreturn = "checkStatus";
             }
 
@@ -206,7 +243,6 @@ public class RiskSmartRoot extends ModuleRoot {
                 prevInsurance = "(none)";
             }
             ctx.setProperty("prevInsurance", prevInsurance);
-            ;
 
         }
         if (toBeReturned == null) {
@@ -215,6 +251,45 @@ public class RiskSmartRoot extends ModuleRoot {
 
         return toBeReturned;
 
+    }
+    
+    // Quick helpers to format data instead of formating it in the html/javascript
+        // ASSUME THE DOC IS A CyberRiskApp document with the correct schemas!
+    protected void buildContextHelpers(DocumentModel inDoc) {
+        
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        Calendar c;
+        String value = "";
+        
+        c = (Calendar) inDoc.getPropertyValue("offer:inception_date");
+        if(c == null) {
+            value = "";
+        } else {
+            value = dateFormat.format(c.getTime());
+        }
+        ctx.setProperty("offerStartDate", value);
+
+        
+        c = (Calendar) inDoc.getPropertyValue("offer:expiration_date");
+        if(c == null) {
+            value = "";
+        } else {
+            value = dateFormat.format(c.getTime());
+        }
+        ctx.setProperty("offerEndDate", value);
+
+        ctx.setProperty("additionalDefCovStr", "no");
+        Boolean b = (Boolean) inDoc.getPropertyValue("offer:additional_def_coverage");
+        if(b != null && b.booleanValue()) {
+            ctx.setProperty("additionalDefCovStr", "yes");
+        }
+
+        ctx.setProperty("supPersCovStr", "no");
+        b = (Boolean) inDoc.getPropertyValue("offer:supplemental_personal_indeminification");
+        if(b != null && b.booleanValue()) {
+            ctx.setProperty("supPersCovStr", "yes");
+        }
+        
     }
 
     protected DocumentModel getRunningApplicationDocument(
@@ -228,12 +303,23 @@ public class RiskSmartRoot extends ModuleRoot {
             // Find any application by this user which is "running"
             docs = session.query("SELECT * FROM CyberRiskApp WHERE cra:user ='"
                     + inNxPcipal.getName()
-                    + "' AND ecm:currentLifeCycleState IN ('project', 'broker_review', 'insurer_review', 'offer')");
+                    + "' AND ecm:currentLifeCycleState IN ('project', 'broker_review', 'insurer_review', 'offer', 'offer_review')");
         } else {
             // Find any application, we'll pick-up the first one for the POC
             docs = session.query("SELECT * FROM CyberRiskApp WHERE"
-                    + " ecm:currentLifeCycleState IN ('project', 'broker_review', 'insurer_review', 'offer')");
+                    + " ecm:currentLifeCycleState IN ('project', 'broker_review', 'insurer_review', 'offer', 'offer_review')");
         }
+        
+        // ===============================================================
+        // ONLY FOR THIS "ONE SINGLE DOC" POC.
+        // TO BE REMOVED, FOR SURE, IN MORE SERIOUS DEVELOPMENT
+        // Find a document whose workflow is finished
+        // ===============================================================
+        if (docs == null || docs.size() == 0) {
+            docs = session.query("SELECT * FROM CyberRiskApp WHERE"
+                    + " ecm:currentLifeCycleState = 'customer_review_offer'");
+        }
+        
         if (docs != null && docs.size() > 0) {
             theDoc = docs.get(0);
         }

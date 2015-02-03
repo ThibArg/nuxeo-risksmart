@@ -36,8 +36,49 @@
 	line-height: normal;
 }
 
+.statusSmallDetails {
+	text-align: center;
+	padding: 0 15;
+	color: black /*white*/;
+	font-size: 22px;
+	line-height: normal;
+}
+
 .statusDetailValue {
 	color: orange /*yellow*/;
+}
+
+.build_offer {
+	text-align: center;
+	padding: 0 15;
+	color: black /*white*/;
+	font-size: 22px;
+	line-height: normal;
+}
+
+.infoFieldOffer {
+	color: orange;
+	font-family: /*'Open Sans',*/ 'Helvetica Neue', Arial, sans-serif;
+	text-align: center;
+	font-size: 22px;
+	line-height: normal;
+	width: 250px;
+	border-top: none;
+	border-right: none;
+	border-left: none;
+	border-bottom: 3px dotted gray;
+}
+
+.infoFieldOfferDate {
+	width: 180px;
+}
+
+.infoFieldOfferTel {
+	width: 180px;
+}
+
+.infoFieldOfferMail {
+	width: 350px;
 }
 
 #mainDiv {

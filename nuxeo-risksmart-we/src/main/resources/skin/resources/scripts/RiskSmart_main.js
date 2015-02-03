@@ -134,11 +134,18 @@ function completeTask(inWFVariables, submitButton) {
 		contextData.transition = "needInfo";
 	} else if (submitButton == "b_reject") {
 		contextData.transition = "reject";
+	} else if (submitButton == "b_offer") {
+		contextData.transition = "validate";
+	} else if (submitButton == "b_toBrokerReviewOffer") {
+		contextData.transition = "ready";
+	} else if (submitButton == "b_brokerValidateOfferReview") {
+		contextData.transition = "approve";
 	}
 
 	nxClient = new nuxeo.Client({
 		timeout : 10000
 	});
+	
 	nxClient.operation("REST_completeTask").context(contextData).execute(
 			function(inErr, inData) {
 				var result;
@@ -179,8 +186,11 @@ function displayRestError(inContextLabel, inTheErr) {
  * Also we have to handle special cases: -> Boolean values -> Photo upload
  */
 function SubmitNodeForm() {
-	var val, inputs, wfVarAssign, nxClient, boolStrFields = [];
-
+	var val,
+		inputs,
+		wfVarAssign,
+		nxClient,
+		boolStrFields = ["o_supplemental_presonal_indeminification", "o_additional_defense_coverage"];
 	// Get all inputs for the dive
 	inputs = jQuery("form#mainForm div#" + gCurrentTaskId + " :input");
 
@@ -194,7 +204,8 @@ function SubmitNodeForm() {
 		}
 	});
 
-	// Handle specific cases (convert bool-strings to real booleans)
+	// Handle specific cases
+	// -> Convert bool-strings to real booleans)
 	boolStrFields.forEach(function(inField) {
 		if (inField in wfVarAssign) {
 			val = wfVarAssign[inField];
@@ -202,6 +213,7 @@ function SubmitNodeForm() {
 					.toLowerCase() == "y");
 		}
 	});
+	
 
 	// gSubmitButton is filled in the html, for "onclick" of the buttons
 	var submitButton = gSubmitButton;

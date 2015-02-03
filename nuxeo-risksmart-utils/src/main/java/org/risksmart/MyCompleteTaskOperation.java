@@ -17,9 +17,12 @@
 
 package org.risksmart;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.automation.OperationContext;
 import org.nuxeo.ecm.automation.core.Constants;
 import org.nuxeo.ecm.automation.core.annotations.Context;
@@ -42,6 +45,8 @@ import org.nuxeo.ecm.platform.task.Task;
 public class MyCompleteTaskOperation {
 
     public static final String ID = "MyCompleteTaskOperation";
+    
+    private static final Log log = LogFactory.getLog(MyCompleteTaskOperation.class);
 
     @Context
     protected CoreSession session;
@@ -55,11 +60,9 @@ public class MyCompleteTaskOperation {
     @Param(name = "comment", required = false)
     protected String comment;
 
-    // @since 5.9.3, 5.8.0-HF11
     @Param(name = "nodeVariables", required = false)
     protected Properties nodeVariables;
 
-    // @since 5.9.3, 5.8.0-HF11
     @Param(name = "workflowVariables", required = false)
     protected Properties workflowVariables;
 
@@ -68,7 +71,12 @@ public class MyCompleteTaskOperation {
 
     @OperationMethod(collector = DocumentModelCollector.class)
     public DocumentModel completeTask(DocumentModel task)
-            throws ClientException {
+            throws ClientException, IOException {
+        
+        log.warn("COUCOU COUCOU COUCOU");;
+        System.out.println("POIPOIPOI");
+        
+        
         Map<String, Object> data = new HashMap<String, Object>();
         if (comment != null) {
             data.put("comment", comment);
