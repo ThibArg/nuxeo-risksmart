@@ -1,4 +1,4 @@
-(Using GitHub as Backup)
+(Misc utilities for a Proof of COncept demo)
 
 ## Build-Install
 
